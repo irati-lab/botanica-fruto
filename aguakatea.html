@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aguakatearen Disekzioa - DBH 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4;
+        }
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif;
+        }
+        
+        /* Interactive Hotspots */
+        .hotspot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .hotspot:hover {
+            filter: drop-shadow(0px 0px 8px rgba(255, 215, 0, 0.9));
+            stroke: #fbbf24;
+            stroke-width: 2px;
+            z-index: 50;
+        }
+        
+        /* Tooltip transitions using Grid Stack technique */
+        .tooltip-stack {
+            display: grid;
+            grid-template-areas: "stack";
+        }
+        .tooltip-card {
+            grid-area: stack; /* All cards sit on top of each other */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            pointer-events: none;
+            z-index: 0;
+            position: relative; /* Normal flow inside grid cell */
+        }
+        /* Default visible card */
+        .tooltip-card.default-card {
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 10;
+        }
+        
+        .tooltip-card.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            z-index: 20; /* Bring active to front */
+        }
+
+        /* Hide default when any other is active */
+        .has-active .default-card {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        /* Custom Checkbox */
+        .custom-checkbox:checked + div {
+            background-color: #16a34a;
+            border-color: #16a34a;
+        }
+        .custom-checkbox:checked + div svg {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 min-h-screen p-2 md:p-6">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl overflow-visible border-4 border-stone-300">
+        
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-green-900 to-green-800 p-8 text-center text-white relative shadow-lg">
+            <h1 class="text-3xl md:text-5xl font-bold mb-2 tracking-wide">Aguakatearen Anatomia Botanikoa</h1>
+            <p class="text-lg text-green-200 font-light">Disekzio Gida Bisuala: Perikarpioa eta Hazia</p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 p-4 md:p-8">
+            
+            <!-- COLUMNA IZQUIERDA: VISUALIZACIÓN (8 columnas) -->
+            <div class="xl:col-span-8 space-y-10">
+                
+                <!-- SECCIÓN 1: PERICARPIO (Fruto) -->
+                <div class="bg-stone-50 rounded-3xl p-6 md:p-8 border border-stone-200 relative shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-6">
+                        <span class="bg-green-700 text-white font-bold w-10 h-10 flex items-center justify-center rounded-full mr-4 text-xl shadow-sm">A</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-green-900">PERIKARPIOA (Fruitua)</h2>
+                    </div>
+                    
+                    <div class="flex flex-col lg:flex-row gap-8 items-center justify-center">
+                        <!-- SVG Fruit -->
+                        <div class="w-64 md:w-72 h-[350px] md:h-[400px] relative flex-shrink-0 drop-shadow-2xl">
+                            <svg viewBox="0 0 300 420" class="w-full h-full overflow-visible">
+                                <defs>
+                                    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#1a202c;stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:#2f3e46;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#1a202c;stop-opacity:1" />
+                                    </linearGradient>
+                                    <radialGradient id="fleshReal" cx="40%" cy="40%" r="60%" fx="30%" fy="30%">
+                                        <stop offset="0%" style="stop-color:#fffbeb;stop-opacity:1" />
+                                        <stop offset="60%" style="stop-color:#d9f99d;stop-opacity:1" />
+                                        <stop offset="90%" style="stop-color:#65a30d;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#365314;stop-opacity:1" />
+                                    </radialGradient>
+                                </defs>
+                                
+                                <path id="part-epi" class="hotspot" 
+                                      d="M150,10 C210,10 270,80 270,220 C270,340 220,400 150,400 C80,400 30,340 30,220 C30,80 90,10 150,10 Z" 
+                                      fill="url(#skinGrad)" stroke="#000" stroke-width="3"
+                                      onmouseover="activateCard('peri', 'card-epi')" onmouseout="deactivateCard('peri', 'card-epi')"/>
+                                
+                                <path id="part-meso" class="hotspot" 
+                                      d="M150,25 C200,25 255,90 255,220 C255,325 210,385 150,385 C90,385 45,325 45,220 C45,90 100,25 150,25 Z" 
+                                      fill="url(#fleshReal)" stroke="none"
+                                      onmouseover="activateCard('peri', 'card-meso')" onmouseout="deactivateCard('peri', 'card-meso')"/>
+
+                                <circle cx="150" cy="240" r="75" fill="#000" opacity="0.1" filter="blur(5px)" />
+
+                                <circle id="part-endo" cx="150" cy="240" r="75" 
+                                        fill="#fefce8" stroke="#d4d4d8" stroke-width="1.5" stroke-dasharray="4,2" 
+                                        class="hotspot opacity-80"
+                                        onmouseover="activateCard('peri', 'card-endo')" onmouseout="deactivateCard('peri', 'card-endo')"/>
+                                
+                                <path d="M45,100 L10,100" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+                                <text x="10" y="95" font-size="12" fill="#333" font-weight="bold" text-anchor="end">Luzetarako Ebaketa</text>
+                            </svg>
+                        </div>
+
+                        <!-- Info Cards Container Pericarpio -->
+                        <div id="stack-peri" class="flex-1 w-full tooltip-stack min-h-[200px]">
+                            
+                            <!-- Default Card -->
+                            <div class="tooltip-card default-card flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center bg-white/50">
+                                <svg class="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <span class="font-semibold">Arakatu fruitua kurtsorea pasatuz</span>
+                            </div>
+                            
+                            <!-- Info Cards -->
+                            <div id="card-epi" class="tooltip-card bg-gray-800 text-white p-6 rounded-2xl shadow-xl border-l-8 border-green-500">
+                                <div class="flex items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-xl text-green-400 mb-2">1. Epikarpioa (Exokarpioa)</h3>
+                                        <p class="text-sm leading-relaxed text-gray-300">Kanpoko "azal" babeslea da. Behatu bere testura zimurtsua Hass bezalako aldaeretan. Gogortasuna ematen dioten zelula harritsuak ditu.</p>
+                                    </div>
+                                    <div class="text-3xl">🛡️</div>
+                                </div>
+                            </div>
+
+                            <div id="card-meso" class="tooltip-card bg-green-100 text-green-900 p-6 rounded-2xl shadow-xl border-l-8 border-green-600">
+                                <div class="flex items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-xl text-green-800 mb-2">2. Mesokarpioa</h3>
+                                        <p class="text-sm leading-relaxed">Oliotan aberatsa den ehun parenkimatikoa (mamia). Nabari ezazu kolore aldaketa: berdeagoa azaletik gertu (klorofila) eta horia barrualdera (karotenoak).</p>
+                                    </div>
+                                    <div class="text-3xl">🥑</div>
+                                </div>
+                            </div>
+
+                            <div id="card-endo" class="tooltip-card bg-yellow-50 text-yellow-900 p-6 rounded-2xl shadow-xl border-l-8 border-yellow-500">
+                                <div class="flex items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-xl text-yellow-800 mb-2">3. Endokarpioa</h3>
+                                        <p class="text-sm leading-relaxed">Mintz-geruza oso fina. Askotan askatu egiten da eta haziari itsatsita geratzen da (paper marroi edo zuri baten antzera). Fruituaren barne-muga da.</p>
+                                    </div>
+                                    <div class="text-3xl">🔍</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: SEMILLA (Realista) -->
+                <div class="bg-amber-50 rounded-3xl p-6 md:p-8 border border-amber-200 relative shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-6">
+                        <span class="bg-amber-700 text-white font-bold w-10 h-10 flex items-center justify-center rounded-full mr-4 text-xl shadow-sm">B</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-amber-900">HAZIA (Barne Disekzioa)</h2>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-center justify-center">
+                        <!-- SVG Seed -->
+                        <div class="w-64 md:w-72 h-[350px] md:h-[400px] relative flex-shrink-0 drop-shadow-2xl">
+                            <svg viewBox="0 0 300 400" class="w-full h-full overflow-visible">
+                                <defs>
+                                    <radialGradient id="testaGrad" cx="30%" cy="30%" r="80%">
+                                        <stop offset="0%" style="stop-color:#b47c4c;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#5d350c;stop-opacity:1" />
+                                    </radialGradient>
+                                    <linearGradient id="cotiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#fde68a;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+
+                                <path id="part-testa" class="seed-coat hotspot" 
+                                      d="M150,20 C220,20 270,100 270,200 C270,320 230,380 150,380 C70,380 30,320 30,200 C30,100 80,20 150,20 Z" 
+                                      fill="url(#testaGrad)" stroke="#3f2305" stroke-width="2"
+                                      onmouseover="activateCard('seed', 'card-testa')" onmouseout="deactivateCard('seed', 'card-testa')"/>
+                                
+                                <path id="part-layers" class="hotspot"
+                                      d="M150,28 C212,28 262,102 262,200 C262,312 225,372 150,372 C75,372 38,312 38,200 C38,102 88,28 150,28 Z"
+                                      fill="#9a6336" opacity="0.5"
+                                      onmouseover="activateCard('seed', 'card-layers')" onmouseout="deactivateCard('seed', 'card-layers')"/>
+
+                                <path id="part-coti" class="hotspot" 
+                                      d="M150,35 C205,35 255,105 255,200 C255,305 220,365 150,365 C80,365 45,305 45,200 C45,105 95,35 150,35 Z" 
+                                      fill="url(#cotiGrad)" stroke="#d97706" stroke-width="1"
+                                      onmouseover="activateCard('seed', 'card-coti')" onmouseout="deactivateCard('seed', 'card-coti')"/>
+                                
+                                <path d="M150,365 L150,330" stroke="#d97706" stroke-width="1" opacity="0.3" />
+                                <path d="M150,35 L150,60" stroke="#d97706" stroke-width="1" opacity="0.3" />
+
+                                <g transform="translate(150, 300)" class="hotspot">
+                                    <rect x="-20" y="-120" width="40" height="140" fill="transparent"
+                                          onmouseover="activateCard('seed', 'card-emb-gen')" onmouseout="deactivateCard('seed', 'card-emb-gen')"/>
+
+                                    <path id="part-rad" d="M-10,0 C-10,10 0,20 10,0 C10,-10 5,-20 0,-20 C-5,-20 -10,-10 -10,0 Z" 
+                                          fill="#d97706" stroke="#b45309" stroke-width="1"
+                                          onmouseover="activateCard('seed', 'card-rad')" onmouseout="deactivateCard('seed', 'card-rad')"/>
+
+                                    <path id="part-hipo" d="M-6,-20 L6,-20 L5,-60 L-5,-60 Z" 
+                                          fill="#fbbf24" stroke="#d97706" stroke-width="1"
+                                          onmouseover="activateCard('seed', 'card-hipo')" onmouseout="deactivateCard('seed', 'card-hipo')"/>
+
+                                    <g id="part-api" onmouseover="activateCard('seed', 'card-api')" onmouseout="deactivateCard('seed', 'card-api')">
+                                        <path d="M-5,-60 Q-15,-80 -2,-95 Q0,-80 0,-60" fill="#fcd34d" stroke="#d97706" stroke-width="1"/>
+                                        <path d="M5,-60 Q15,-80 2,-95 Q0,-80 0,-60" fill="#fcd34d" stroke="#d97706" stroke-width="1"/>
+                                        <circle cx="0" cy="-65" r="3" fill="#fff" opacity="0.8"/>
+                                    </g>
+                                </g>
+
+                                <circle cx="150" cy="240" r="45" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+                            </svg>
+                        </div>
+
+                        <!-- Info Cards Container Semilla (Grid Stack Fix) -->
+                        <div id="stack-seed" class="flex-1 w-full tooltip-stack min-h-[200px]">
+                            
+                            <div class="tooltip-card default-card flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center bg-white/50">
+                                <svg class="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                <span class="font-semibold">Arakatu barrualdea: Pasa kurtsorea enbrioiaren gainetik</span>
+                            </div>
+
+                            <div id="card-emb-gen" class="tooltip-card bg-red-50 text-red-900 p-6 rounded-2xl shadow-xl border-l-8 border-red-500">
+                                <h3 class="font-bold text-xl text-red-700 mb-2">Ardatz Enbrionarioa</h3>
+                                <p class="text-sm leading-relaxed">Hau da landare haurra! Kotiledoien artean kokatua. Pasa sagua bere zatietatik (goikoa, erdikoa, behekoa) xehetasunak ikusteko.</p>
+                            </div>
+
+                            <div id="card-testa" class="tooltip-card bg-amber-900 text-white p-6 rounded-2xl shadow-xl border-l-8 border-amber-500">
+                                <h3 class="font-bold text-xl text-amber-300 mb-2">5. Testa (Episperma)</h3>
+                                <p class="text-sm leading-relaxed">Kanpoko geruza marroia. Lehortea saihesten du eta onddoetatik babesten du ernamuindu aurretik. Haziaren "azala" da.</p>
+                            </div>
+
+                            <div id="card-layers" class="tooltip-card bg-orange-100 text-orange-900 p-6 rounded-2xl shadow-xl border-l-8 border-orange-500">
+                                <h3 class="font-bold text-xl text-orange-800 mb-2">4. Tegmena / 7. Perisperma</h3>
+                                <p class="text-sm leading-relaxed">
+                                    Testaren azpiko geruza fin-finak. <br>
+                                    <b>Tegmena:</b> Estalkiaren barneko geruza.<br>
+                                    <b>Perisperma/Endosperma:</b> Antzinako ehun nutritiboaren hondarrak, orain mintz ia ikusezin batera murriztuak.
+                                </p>
+                            </div>
+
+                            <div id="card-coti" class="tooltip-card bg-yellow-100 text-yellow-900 p-6 rounded-2xl shadow-xl border-l-8 border-yellow-500">
+                                <h3 class="font-bold text-xl text-yellow-800 mb-2">1. Kotiledoiak</h3>
+                                <p class="text-sm leading-relaxed">Erreserba organo masiboak. Haziaren %90 hartzen dute. Almidoiz beteta daude enbrioia hilabetez elikatzeko benetako hostoak izan arte.</p>
+                            </div>
+
+                            <div id="card-hipo" class="tooltip-card bg-red-50 text-red-900 p-6 rounded-2xl shadow-xl border-l-8 border-red-500">
+                                <h3 class="font-bold text-xl text-red-700 mb-2">2. Hipokotiloa</h3>
+                                <p class="text-sm leading-relaxed">Enbrioiaren "zurtoina". Trantsizio-eremua da; luzatu egingo da kotiledoiak edo plumula argirantz bultzatzeko.</p>
+                            </div>
+
+                            <div id="card-rad" class="tooltip-card bg-orange-100 text-orange-900 p-6 rounded-2xl shadow-xl border-l-8 border-orange-600">
+                                <h3 class="font-bold text-xl text-orange-800 mb-2">3. Erradikula</h3>
+                                <p class="text-sm leading-relaxed">Oinarrizko polo konikoa. Etorkizuneko sustrai nagusia da. Ernamuintzean, testa apurtu eta lehenengoa ateratzen da ura bilatzeko.</p>
+                            </div>
+
+                            <div id="card-api" class="tooltip-card bg-yellow-200 text-yellow-900 p-6 rounded-2xl shadow-xl border-l-8 border-yellow-600">
+                                <h3 class="font-bold text-xl text-yellow-800 mb-2">8. Apizea / Plumula</h3>
+                                <p class="text-sm leading-relaxed">Polo apikala. Hemen dago <b>Meristemoa</b> (hazkunde-ehuna) eta hosto primordioak (hostotxo ñimiñoak). Hemendik aterako da aireko zurtoina.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: CHECKLIST (4 columnas) -->
+            <div class="xl:col-span-4">
+                <div class="bg-white rounded-3xl shadow-xl border-t-8 border-blue-600 p-6 sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto z-30">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 border-bpb-4">Behaketa Orria</h3>
+                    <p class="text-sm text-gray-500 mb-6 italic">Markatu egiturak disekzioa egin ahala.</p>
+
+                    <div class="space-y-4 pr-2">
+                        
+                        <div class="flex items-center gap-2 text-sm font-bold text-green-700 uppercase tracking-wider mt-4 mb-2 bg-green-50 p-2 rounded">
+                            <span>🥑</span> Perikarpioa
+                        </div>
+                        
+                        <label class="flex items-start space-x-3 cursor-pointer group hover:bg-gray-50 p-2 rounded transition">
+                            <input type="checkbox" class="custom-checkbox hidden">
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white mt-0.5"><svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                            <div>
+                                <span class="text-gray-800 font-semibold block">1. Epikarpioa</span>
+                                <span class="text-xs text-gray-500">Zimurtsua ala leuna?</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer group hover:bg-gray-50 p-2 rounded transition">
+                            <input type="checkbox" class="custom-checkbox hidden">
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white mt-0.5"><svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                            <div>
+                                <span class="text-gray-800 font-semibold block">2. Mesokarpioa</span>
+                                <span class="text-xs text-gray-500">Identifikatu kolore aldaketa.</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer group hover:bg-gray-50 p-2 rounded transition">
+                            <input type="checkbox" class="custom-checkbox hidden">
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white mt-0.5"><svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                            <div>
+                                <span class="text-gray-800 font-semibold block">3. Endokarpioa</span>
+                                <span class="text-xs text-gray-500">Fruituan edo hazian geratu da?</span>
+                            </div>
+                        </label>
+
+                        <div class="flex items-center gap-2 text-sm font-bold text-amber-700 uppercase tracking-wider mt-8 mb-2 bg-amber-50 p-2 rounded">
+                            <span>🌰</span> Hazia
+                        </div>
+
+                        <label class="flex items-start space-x-3 cursor-pointer group hover:bg-gray-50 p-2 rounded transition">
+                            <input type="checkbox" class="custom-checkbox hidden">
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white mt-0.5"><svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                            <div>
+                                <span class="text-gray-800 font-semibold block">4/5. Estalkiak (Testa)</span>
+                                <span class="text-xs text-gray-500">Saiatu kontuz zuritzen.</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer group hover:bg-gray-50 p-2 rounded transition">
+                            <input type="checkbox" class="custom-checkbox hidden">
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white mt-0.5"><svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                            <div>
+                                <span class="text-gray-800 font-semibold block">1. Kotiledoiak</span>
+                                <span class="text-xs text-gray-500">Banatu eskuekin.</span>
+                            </div>
+                        </label>
+                        
+                        <div class="pl-4 mt-2 border-l-4 border-red-200 ml-3 bg-red-50/50 rounded-r-lg py-2">
+                            <p class="text-xs font-bold text-red-600 mb-2 uppercase">Enbrioia (Lupa beharrezkoa)</p>
+                            <label class="flex items-center space-x-3 cursor-pointer group hover:bg-white p-1 rounded transition mb-1">
+                                <input type="checkbox" class="custom-checkbox hidden">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white"><svg class="w-2 h-2 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="text-gray-700 text-sm">8. Apizea (Plumula)</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer group hover:bg-white p-1 rounded transition mb-1">
+                                <input type="checkbox" class="custom-checkbox hidden">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white"><svg class="w-2 h-2 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="text-gray-700 text-sm">2. Hipokotiloa</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer group hover:bg-white p-1 rounded transition">
+                                <input type="checkbox" class="custom-checkbox hidden">
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded flex flex-shrink-0 items-center justify-center bg-white"><svg class="w-2 h-2 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="text-gray-700 text-sm">3. Erradikula</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="bg-stone-800 text-stone-300 text-center p-6 text-sm">
+            <p class="font-semibold">Biologia eta Geologia Saila - DBH 1</p>
+            <p class="text-xs mt-1 text-stone-500">Laborategirako material didaktiko interaktiboa</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Use separate timeouts for each stack to avoid conflicts
+        let timeouts = {};
+
+        function activateCard(stackName, cardId) {
+            // Clear any pending hide action for this stack
+            if(timeouts[stackName]) clearTimeout(timeouts[stackName]);
+
+            const stack = document.getElementById('stack-' + stackName);
+            if(!stack) return;
+
+            // Mark stack as having an active card (to hide default)
+            stack.classList.add('has-active');
+
+            // Hide all other cards in this stack immediately
+            stack.querySelectorAll('.tooltip-card').forEach(el => {
+                if(el.id !== cardId && !el.classList.contains('default-card')) {
+                    el.classList.remove('active');
+                    // Ensure opacity transition works by not hiding display immediately if possible
+                    // but with grid stack we don't need display:none
+                }
+            });
+
+            // Activate target
+            const target = document.getElementById(cardId);
+            if(target) target.classList.add('active');
+        }
+
+        function deactivateCard(stackName, cardId) {
+            const target = document.getElementById(cardId);
+            if(target) target.classList.remove('active');
+
+            // Delay showing default to see if user moves to another hotspot
+            timeouts[stackName] = setTimeout(() => {
+                const stack = document.getElementById('stack-' + stackName);
+                if(stack) {
+                    // Check if any card is still active in this stack
+                    const anyActive = stack.querySelector('.tooltip-card.active');
+                    if(!anyActive) {
+                        stack.classList.remove('has-active');
+                    }
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
