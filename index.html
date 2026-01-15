@@ -3,207 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomía Floral | Experiencia Interactiva</title>
+    <title>Anatomía Floral | Experiencia Inmersiva</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         
         body {
             font-family: 'Outfit', sans-serif;
-            background: #0f172a;
+            background: #060b14;
             color: #f8fafc;
             overflow-x: hidden;
         }
 
         .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .card-active {
-            border-color: #ec4899;
-            background: rgba(236, 72, 153, 0.1);
-            transform: scale(1.02);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
 
-        .glow-text {
-            text-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+        .glow-pink { text-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+        
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
         }
+        .animate-pulse-slow { animation: pulse-soft 3s infinite; }
 
-        /* Animaciones */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+        /* Estilo para el botón de pantalla completa */
+        #fullscreen-btn {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #fullscreen-btn:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+        }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen" id="app-container">
+
+    <!-- Botón Flotante Pantalla Completa -->
+    <button id="fullscreen-btn" onclick="toggleFullScreen()" class="fixed bottom-8 right-8 z-50 bg-pink-600 hover:bg-pink-500 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 font-bold text-sm">
+        <svg id="fs-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        <span id="fs-text">MODO INMERSIVO</span>
+    </button>
 
     <!-- Fondo Decorativo -->
     <div class="fixed inset-0 -z-10">
-        <div class="absolute top-0 -left-4 w-72 h-72 bg-pink-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20"></div>
+        <div class="absolute top-0 -left-4 w-96 h-96 bg-pink-600 rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
-        <!-- Header -->
-        <header class="text-center mb-12 animate-fade">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter glow-text">
-                ANATOMÍA <span class="text-pink-500">FLORAL</span>
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <header class="text-center mb-16">
+            <div class="inline-block px-4 py-1.5 rounded-full border border-pink-500/30 text-pink-500 text-[10px] font-black tracking-[0.2em] mb-6 animate-pulse-slow">
+                SISTEMA INTERACTIVO v2.0
+            </div>
+            <h1 class="text-6xl md:text-8xl font-extrabold mb-4 tracking-tighter glow-pink">
+                FLORAL <span class="text-pink-500">CORE</span>
             </h1>
-            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto font-light">
-                Un viaje interactivo al corazón de la vida vegetal. Haz clic en las categorías para desglosar cada componente.
+            <p class="text-slate-500 text-xl max-w-xl mx-auto font-light">
+                Haz clic en los filtros para aislar sistemas biológicos.
             </p>
         </header>
 
-        <!-- Main Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             
-            <!-- Columna Izquierda: Imagen y Filtros -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="glass p-4 rounded-[2rem] shadow-2xl relative group overflow-hidden">
-                    <div class="relative rounded-2xl overflow-hidden bg-slate-900/50 flex items-center justify-center min-h-[400px]">
+            <!-- Visualizer -->
+            <div class="lg:col-span-7">
+                <div class="glass p-5 rounded-[2.5rem] shadow-2xl relative group">
+                    <div class="relative rounded-3xl overflow-hidden bg-black/40 flex items-center justify-center min-h-[500px] border border-white/5">
                         <img 
                             id="main-image"
                             src="image_97e42e.png" 
-                            alt="Diagrama de la flor" 
-                            class="max-h-full w-auto object-contain transition-transform duration-700 group-hover:scale-105"
-                            onerror="handleImageError(this)"
+                            alt="Botanical Core" 
+                            class="max-h-[450px] w-auto object-contain transition-all duration-1000 group-hover:scale-105"
+                            onerror="this.style.display='none'; document.getElementById('fallback').classList.remove('hidden')"
                         >
-                        
-                        <!-- Overlay de información si falla la imagen -->
-                        <div id="image-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                            <div class="text-5xl mb-4">🌸</div>
-                            <h3 class="text-xl font-bold text-white">Imagen no encontrada</h3>
-                            <p class="text-slate-400 mt-2">Asegúrate de que el archivo se llame <strong>image_97e42e.png</strong> y esté en la misma carpeta.</p>
+                        <div id="fallback" class="hidden text-center p-10">
+                            <span class="text-5xl block mb-4">🔬</span>
+                            <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Esperando Recurso Visual...</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Botones de Categoría -->
-                <div class="flex flex-wrap justify-center gap-3">
-                    <button onclick="filterParts('all')" class="category-btn bg-pink-600 text-white px-6 py-3 rounded-2xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-pink-500/20">VER TODO</button>
-                    <button onclick="filterParts('gineceo')" class="category-btn glass text-slate-300 px-6 py-3 rounded-2xl font-bold hover:text-pink-400 transition-all border-pink-500/30">GINECEO</button>
-                    <button onclick="filterParts('androceo')" class="category-btn glass text-slate-300 px-6 py-3 rounded-2xl font-bold hover:text-blue-400 transition-all border-blue-500/30">ANDROCEO</button>
-                    <button onclick="filterParts('perianto')" class="category-btn glass text-slate-300 px-6 py-3 rounded-2xl font-bold hover:text-emerald-400 transition-all border-emerald-500/30">PERIANTO</button>
-                    <button onclick="filterParts('soporte')" class="category-btn glass text-slate-300 px-6 py-3 rounded-2xl font-bold hover:text-amber-400 transition-all border-amber-500/30">SOPORTE</button>
+                <div class="mt-8 flex flex-wrap justify-center gap-3">
+                    <button onclick="filterParts('all')" class="category-btn bg-pink-600 text-white px-8 py-4 rounded-2xl font-black text-xs tracking-widest transition-all hover:shadow-[0_0_20px_rgba(236,72,153,0.3)]">TODO</button>
+                    <button onclick="filterParts('gineceo')" class="category-btn glass text-slate-400 px-8 py-4 rounded-2xl font-black text-xs tracking-widest hover:text-pink-500 transition-all">GINECEO</button>
+                    <button onclick="filterParts('androceo')" class="category-btn glass text-slate-400 px-8 py-4 rounded-2xl font-black text-xs tracking-widest hover:text-blue-500 transition-all">ANDROCEO</button>
+                    <button onclick="filterParts('perianto')" class="category-btn glass text-slate-400 px-8 py-4 rounded-2xl font-black text-xs tracking-widest hover:text-emerald-500 transition-all">PERIANTO</button>
+                    <button onclick="filterParts('soporte')" class="category-btn glass text-slate-400 px-8 py-4 rounded-2xl font-black text-xs tracking-widest hover:text-amber-500 transition-all">SOPORTE</button>
                 </div>
             </div>
 
-            <!-- Columna Derecha: Información Detallada -->
-            <div class="lg:col-span-5 h-[700px] overflow-y-auto pr-4 custom-scroll" id="info-panel">
-                <!-- Se inyecta por JS -->
-            </div>
+            <!-- Panel -->
+            <div class="lg:col-span-5 h-[750px] overflow-y-auto pr-4 custom-scroll" id="info-panel"></div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="mt-20 py-12 border-t border-slate-800 text-center">
-        <p class="text-slate-500 text-sm tracking-widest uppercase font-bold">Proyecto Educativo Botánico &copy; 2024</p>
-    </footer>
 
     <script>
         const anatomyData = {
             gineceo: {
                 title: "Gineceo",
-                color: "text-pink-400",
-                bg: "border-pink-500/30",
+                color: "text-pink-500",
+                bg: "border-pink-500/20",
                 parts: [
-                    { name: "Estigma", desc: "Parte superior pegajosa del pistilo encargada de recibir y retener el polen para iniciar la fecundación." },
-                    { name: "Estilo", desc: "Tubo conductor que eleva el estigma y por donde crece el tubo polínico hacia los óvulos." },
-                    { name: "Ovario", desc: "Base del gineceo que protege los óvulos y se convertirá en fruto tras la polinización exitosa." },
-                    { name: "Óvulos", desc: "Estructuras reproductivas que contienen el gameto femenino y se transforman en semillas." }
+                    { name: "Estigma", desc: "Superficie glandular terminal que recibe el polen." },
+                    { name: "Estilo", desc: "Columna de tejido que conecta estigma y ovario." },
+                    { name: "Ovario", desc: "Órgano basal que contiene los primordios seminales." },
+                    { name: "Óvulos", desc: "Gametofitos femeninos listos para la fecundación." }
                 ]
             },
             androceo: {
                 title: "Androceo",
-                color: "text-blue-400",
-                bg: "border-blue-500/30",
+                color: "text-blue-500",
+                bg: "border-blue-500/20",
                 parts: [
-                    { name: "Antera", desc: "Saco polínico donde se genera y almacena el polen, lista para abrirse y dispersar la carga genética." },
-                    { name: "Conectivo", desc: "Tejido estéril que une las dos mitades de la antera y facilita su movimiento para la dispersión." },
-                    { name: "Grano de Polen", desc: "Portador del gameto masculino, protegido por una cáscara ultra-resistente llamada exina." },
-                    { name: "Filamento", desc: "Soporte largo y delgado que posiciona la antera para el contacto óptimo con polinizadores." }
+                    { name: "Antera", desc: "Sacos donde ocurre la microsporogénesis del polen." },
+                    { name: "Conectivo", desc: "Tejido vascular que une las tecas de la antera." },
+                    { name: "Grano de Polen", desc: "Unidad de dispersión del gameto masculino." },
+                    { name: "Filamento", desc: "Eje estéril que soporta la unidad productiva." }
                 ]
             },
             perianto: {
                 title: "Perianto",
-                color: "text-emerald-400",
-                bg: "border-emerald-500/30",
+                color: "text-emerald-500",
+                bg: "border-emerald-500/20",
                 parts: [
-                    { name: "Pétalo", desc: "Hojas modificadas de colores vivos y aromas intensos cuya misión única es atraer a los polinizadores." },
-                    { name: "Sépalo", desc: "Hojas verdes y resistentes que protegen la flor en su etapa de capullo contra amenazas externas." }
+                    { name: "Pétalo", desc: "Unidad de la corola con funciones de señalización." },
+                    { name: "Sépalo", desc: "Protección mecánica del meristemo floral." }
                 ]
             },
             soporte: {
-                title: "Soporte y Nutrición",
-                color: "text-amber-400",
-                bg: "border-amber-500/30",
+                title: "Base Estructural",
+                color: "text-amber-500",
+                bg: "border-amber-500/20",
                 parts: [
-                    { name: "Nectario", desc: "Glándulas que secretan néctar azucarado, el combustible que premia a los animales por polinizarlos." },
-                    { name: "Eje Floral", desc: "También llamado receptáculo, es la base sólida donde se anclan todos los órganos de la flor." },
-                    { name: "Pedículo", desc: "Tallo individual que sostiene la flor y conecta su sistema vascular con el resto de la planta." }
+                    { name: "Nectario", desc: "Tejido secretor de fluidos energéticos." },
+                    { name: "Eje Floral", desc: "Plataforma de inserción de los verticilos." },
+                    { name: "Pedículo", desc: "Eje conductor que conecta con el sistema caulinar." }
                 ]
             }
         };
 
         function filterParts(category) {
             const panel = document.getElementById('info-panel');
-            panel.innerHTML = ''; // Limpiar panel
-
+            panel.innerHTML = '';
             const keys = category === 'all' ? Object.keys(anatomyData) : [category];
             
             keys.forEach(key => {
                 const group = anatomyData[key];
-                const section = document.createElement('div');
-                section.className = 'mb-12 animate-fade';
+                const div = document.createElement('div');
+                div.className = "mb-10 opacity-0 translate-y-4 transition-all duration-700";
                 
-                let html = `
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-1 h-8 bg-current ${group.color} rounded-full"></div>
-                        <h2 class="text-2xl font-black uppercase tracking-wider ${group.color}">${group.title}</h2>
-                    </div>
-                    <div class="grid gap-4">
-                `;
-
-                group.parts.forEach(part => {
+                let html = `<h2 class="text-xs font-black tracking-[0.3em] uppercase mb-6 ${group.color}">${group.title}</h2><div class="grid gap-4">`;
+                group.parts.forEach(p => {
                     html += `
-                        <div class="glass p-6 rounded-3xl border ${group.bg} transition-all duration-300 hover:border-white/40 group cursor-default">
-                            <h3 class="text-lg font-bold ${group.color} mb-2 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-current opacity-50 group-hover:opacity-100 transition-opacity"></span>
-                                ${part.name}
-                            </h3>
-                            <p class="text-slate-400 text-sm leading-relaxed font-light">${part.desc}</p>
+                        <div class="glass p-7 rounded-[2rem] border ${group.bg} hover:border-white/20 transition-all group">
+                            <h3 class="text-xl font-bold mb-2 group-hover:translate-x-1 transition-transform">${p.name}</h3>
+                            <p class="text-slate-500 text-sm font-light leading-relaxed">${p.desc}</p>
                         </div>
                     `;
                 });
-
                 html += `</div>`;
-                section.innerHTML = html;
-                panel.appendChild(section);
-            });
-
-            // Actualizar botones
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                if(btn.innerText.toLowerCase() === category.toLowerCase() || (category === 'all' && btn.innerText === 'VER TODO')) {
-                    btn.classList.add('bg-pink-600', 'text-white');
-                    btn.classList.remove('glass', 'text-slate-300');
-                } else {
-                    btn.classList.remove('bg-pink-600', 'text-white');
-                    btn.classList.add('glass', 'text-slate-300');
-                }
+                div.innerHTML = html;
+                panel.appendChild(div);
+                setTimeout(() => { div.style.opacity = '1'; div.style.transform = 'translateY(0)'; }, 50);
             });
         }
 
-        function handleImageError(img) {
-            img.classList.add('hidden');
-            document.getElementById('image-fallback').classList.remove('hidden');
+        function toggleFullScreen() {
+            const doc = document.documentElement;
+            const btnText = document.getElementById('fs-text');
+            const btnIcon = document.getElementById('fs-icon');
+
+            if (!document.fullscreenElement) {
+                doc.requestFullscreen().then(() => {
+                    btnText.innerText = "SALIR DE PANTALLA";
+                    btnIcon.innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>';
+                }).catch(err => {
+                    console.log(`Error al intentar modo inmersivo: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+                btnText.innerText = "MODO INMERSIVO";
+                btnIcon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+            }
         }
 
-        // Carga inicial
         window.onload = () => filterParts('all');
     </script>
 </body>
