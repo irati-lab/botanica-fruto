@@ -1,0 +1,272 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Flower, 
+  Info, 
+  ChevronRight, 
+  Wind, 
+  Droplets, 
+  CircleDot, 
+  Zap,
+  MousePointer2,
+  LayoutGrid
+} from 'lucide-react';
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState('all');
+  const [selectedPart, setSelectedPart] = useState(null);
+  const scrollContainerRef = useRef(null);
+
+  // Definición profunda de cada parte según la imagen
+  const anatomyData = {
+    gineceo: {
+      title: "Gineceo (Sistema Femenino)",
+      color: "bg-pink-500",
+      textColor: "text-pink-600",
+      borderColor: "border-pink-100",
+      parts: [
+        { name: "Estigma", desc: "La plataforma receptora. Es pegajosa para atrapar el polen y contiene enzimas que activan la germinación del tubo polínico." },
+        { name: "Estilo", desc: "Un conducto biológico de 'autovía'. Transporta el polen hacia el ovario y filtra los granos de polen que no son compatibles." },
+        { name: "Ovario", desc: "La cámara de incubación. Protege a los óvulos de las condiciones externas y se transformará en el fruto que conocemos." },
+        { name: "Óvulos", desc: "Células reproductivas que contienen la carga genética materna. Al ser fecundados, se convertirán en semillas duraderas." }
+      ]
+    },
+    androceo: {
+      title: "Androceo (Sistema Masculino)",
+      color: "bg-blue-500",
+      textColor: "text-blue-600",
+      borderColor: "border-blue-100",
+      parts: [
+        { name: "Antera", desc: "Micro-fábrica de polen. Consta de sacos polínicos que se abren por presión o desecación para liberar su contenido." },
+        { name: "Conectivo", desc: "Tejido estéril clave. Une las dos partes de la antera (tecas) y permite que esta se mueva para facilitar la dispersión." },
+        { name: "Granos de polen", desc: "Cápsulas de vida. Están recubiertos de exina, una de las sustancias más resistentes de la naturaleza, protegiendo el ADN masculino." },
+        { name: "Filamento", desc: "El elevador mecánico. Ajusta la altura de la antera para que coincida con el cuerpo del polinizador o la corriente de aire." }
+      ]
+    },
+    perianto: {
+      title: "Perianto (Protección y Atracción)",
+      color: "bg-emerald-500",
+      textColor: "text-emerald-600",
+      borderColor: "border-emerald-100",
+      parts: [
+        { name: "Pétalos", desc: "Carteles publicitarios biológicos. Sus pigmentos y aromas están diseñados para seducir a polinizadores específicos." },
+        { name: "Sépalos", desc: "La armadura inicial. Protegen a la flor mientras es un capullo contra el frío, la lluvia y los depredadores herbóvoros." }
+      ]
+    },
+    base: {
+      title: "Base y Nutrición",
+      color: "bg-amber-500",
+      textColor: "text-amber-600",
+      borderColor: "border-amber-100",
+      parts: [
+        { name: "Nectarios", desc: "Glándulas de recompensa. Producen una solución azucarada (néctar) que es el motor energético de la relación planta-animal." },
+        { name: "Eje floral", desc: "También llamado receptáculo. Es la plataforma sólida donde se anclan armónicamente todos los órganos de la flor." },
+        { name: "Pedículo", desc: "El puente de suministro. Conecta la flor con el resto de la planta, transportando agua, minerales y hormonas de crecimiento." }
+      ]
+    }
+  };
+
+  const sections = Object.keys(anatomyData);
+
+  // Efecto para resetear el scroll del panel lateral al cambiar de sección
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [activeSection]);
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-pink-100 selection:text-pink-900">
+      {/* Background Decor */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-pink-100/50 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 -right-24 w-80 h-80 bg-blue-100/50 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Header */}
+      <header className="pt-12 pb-8 px-6 text-center max-w-4xl mx-auto">
+        <div className="inline-flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 mb-6">
+          <Flower className="text-pink-500 w-5 h-5 animate-pulse" />
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Botánica de Precisión</span>
+        </div>
+        <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
+          Anatomía de <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">la Flor</span>
+        </h1>
+        <p className="text-slate-600 text-lg md:text-xl font-medium">
+          Guía interactiva avanzada. Selecciona una categoría para explorar sus funciones biológicas.
+        </p>
+      </header>
+
+      {/* Control Bar */}
+      <div className="sticky top-4 z-40 max-w-fit mx-auto mb-10 px-4">
+        <div className="bg-white/80 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-2 flex flex-wrap justify-center gap-2">
+          <button 
+            onClick={() => setActiveSection('all')}
+            className={`flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold transition-all ${activeSection === 'all' ? 'bg-slate-900 text-white shadow-lg scale-105' : 'bg-transparent text-slate-600 hover:bg-slate-100'}`}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span>Ver Todo</span>
+          </button>
+          {sections.map(s => (
+            <button 
+              key={s}
+              onClick={() => setActiveSection(s)}
+              className={`px-5 py-2.5 rounded-2xl font-bold capitalize transition-all ${activeSection === s ? `${anatomyData[s].color} text-white shadow-lg scale-105` : 'bg-transparent text-slate-600 hover:bg-slate-100'}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 pb-24 items-start">
+        
+        {/* Left Side: Visual Asset */}
+        <div className="lg:col-span-7 lg:sticky lg:top-32">
+          <div className="bg-white p-4 rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden group">
+            <div className="relative aspect-video flex items-center justify-center overflow-hidden rounded-[1.8rem] bg-slate-50 border border-slate-100">
+              <img 
+                src="image_97e42e.png" 
+                alt="Diagrama Anatómico Floral" 
+                className="max-h-full w-auto object-contain transition-transform duration-1000 group-hover:scale-110"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.style.display = 'none';
+                  e.target.parentElement.innerHTML += `
+                    <div class="flex flex-col items-center justify-center p-12 text-center text-slate-400">
+                      <div class="w-20 h-20 mb-4 bg-slate-100 rounded-full flex items-center justify-center">🌸</div>
+                      <p class="font-bold text-slate-600">Falta la imagen "image_97e42e.png"</p>
+                      <p class="text-sm mt-2 max-w-xs">Asegúrate de que el archivo esté en la misma carpeta que este HTML para verlo aquí.</p>
+                    </div>
+                  `;
+                }}
+              />
+              <div className="absolute bottom-6 left-6 bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-2xl text-xs font-bold flex items-center space-x-2 shadow-xl border border-white/10">
+                <MousePointer2 className="w-3 h-3 text-pink-400" />
+                <span>Referencia Visual Directa</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-8 bg-blue-50 border border-blue-100 p-6 rounded-3xl">
+            <h4 className="flex items-center font-bold text-blue-900 mb-2">
+              <Info className="w-5 h-5 mr-2" /> Sabías que...
+            </h4>
+            <p className="text-blue-800/80 text-sm leading-relaxed">
+              La estructura de la flor está diseñada matemáticamente para maximizar las posibilidades de fecundación. Cada ángulo del <strong>pedículo</strong> y posición de la <strong>antera</strong> responde a millones de años de evolución.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side: Information Panels */}
+        <div 
+          ref={scrollContainerRef}
+          className="lg:col-span-5 h-[800px] overflow-y-auto pr-4 custom-scrollbar space-y-12"
+        >
+          {sections.map(key => {
+            // Lógica de visibilidad corregida
+            const isVisible = activeSection === 'all' || activeSection === key;
+            if (!isVisible) return null;
+
+            const group = anatomyData[key];
+            return (
+              <div 
+                key={key} 
+                className="animate-in fade-in slide-in-from-bottom duration-700 space-y-6"
+              >
+                <div className="flex items-center justify-between sticky top-0 bg-slate-50/95 backdrop-blur-sm py-2 z-10">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-4 h-10 ${group.color} rounded-2xl shadow-lg shadow-current/20`}></div>
+                    <h2 className="text-2xl font-black text-slate-800 tracking-tight">{group.title}</h2>
+                  </div>
+                  <span className={`text-[10px] font-black uppercase tracking-tighter px-3 py-1 rounded-full border ${group.borderColor} ${group.textColor}`}>
+                    Sección {sections.indexOf(key) + 1}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4">
+                  {group.parts.map(part => (
+                    <div 
+                      key={part.name}
+                      onMouseEnter={() => setSelectedPart(part.name)}
+                      onMouseLeave={() => setSelectedPart(null)}
+                      className={`group relative p-6 rounded-3xl border transition-all duration-300 ${
+                        selectedPart === part.name 
+                        ? 'bg-white shadow-2xl border-slate-300 -translate-y-1' 
+                        : 'bg-white/60 border-slate-200 hover:border-slate-300 hover:bg-white'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className={`text-lg font-extrabold ${group.textColor} flex items-center`}>
+                          <div className={`w-2 h-2 rounded-full mr-3 ${group.color} ${selectedPart === part.name ? 'scale-150 animate-ping' : ''}`}></div>
+                          {part.name}
+                        </h3>
+                        <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${selectedPart === part.name ? 'translate-x-1 opacity-100' : 'opacity-0'}`} />
+                      </div>
+                      <p className="text-slate-600 leading-relaxed font-medium text-sm">
+                        {part.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </main>
+
+      {/* Interactive Footer Features */}
+      <section className="bg-slate-900 py-24 px-6 overflow-hidden relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+        
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-16">
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-blue-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+              <Wind className="text-blue-400 w-8 h-8" />
+            </div>
+            <h4 className="text-white font-bold text-xl mb-3">Dispersión</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">Las <strong>Anteras</strong> y el <strong>Polen</strong> están diseñados para viajar kilómetros gracias a la aerodinámica.</p>
+          </div>
+
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-pink-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+              <Droplets className="text-pink-400 w-8 h-8" />
+            </div>
+            <h4 className="text-white font-bold text-xl mb-3">Fertilidad</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">El <strong>Estigma</strong> y el <strong>Estilo</strong> filtran la vida para asegurar que solo los mejores genes lleguen al <strong>Óvulo</strong>.</p>
+          </div>
+
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-amber-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+              <CircleDot className="text-amber-400 w-8 h-8" />
+            </div>
+            <h4 className="text-white font-bold text-xl mb-3">Soporte</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">Sin el <strong>Pedículo</strong> ni el <strong>Eje Floral</strong>, la flor no podría sostener el peso del fruto futuro.</p>
+          </div>
+        </div>
+      </section>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+          border: 2px solid #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slide-in-bottom { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-in { animation: slide-in-bottom 0.6s ease-out forwards; }
+      `}</style>
+    </div>
+  );
+};
+
+export default App;
